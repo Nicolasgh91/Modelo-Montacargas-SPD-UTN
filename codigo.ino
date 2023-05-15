@@ -1,45 +1,3 @@
-## 📋 Documentación de la parte práctica del primer parcial para la materia Sistemas de procesamiento de datos - UTN Tecnicatura Superior en Programación.  
-
-Desafio donde se busca simular el recorrido de un montacargas.
-
-![Imagen no encontrada](./img/ArduinoTinkercad.jpg "Tinkercad")
-
- 
-## Proyecto: Montacargas.
-
-***
-![Imagen no encontrada](./img/Conexiones-placa.png "Parcial Nº1 SPD - UTN")
-
-## Comenzando 🚀
-***
-
-En este proyecto simula el ascenso, descenso y pausa de un montacargas/elevador:
-- Al presionar el pulsador de subir, da comienzo a la simulación y sube de a un piso a la vez.
-- Al presionar el pulsador de bajar, baja un piso a la vez.
-- Al presionar el pulsador de pausar, frena el sistema y el montacargas se queda en la posición a la espera de una nueva indicación.
-- El sistema consta de 2 leds indicadores:   
-  - Led verde indica que el montacargas está subiendo.
-  - Led rojo indica que el pulsador de pausa ha sido presionado y se frenó el sistema.  
-
-
-[Link del proyecto en Tinkercad ](https://www.tinkercad.com/things/13dhFNJBz53?sharecode=SiTig1GAiG8UVaN78oe8jJpEupKP30JCmkHKZclBln4 "Enlace del proyecto en Tinkercad")
-
-## Consigna 🔩
-
-Consigna Montacargas:
-
-Para realizar el proyecto deberán usar mínimamente:  
-1 ARDUINO UNO.  
-1 Display 7 segmentos.  
-2 LEDS.    
-3 BOTONES  
-RESISTENCIAS NECESARIAS PARA CADA COMPONENTE.
-
-## Código del programa: 🔩
-
-* * *
-
- ~~~ C (Lenguaje del código)
 #define ledVerde 6
 #define ledRojo 5
 #define P_SUBE 19
@@ -131,42 +89,52 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
   switch(contador) // El contador determina el piso a donde ir
   {
   	case 0:
+    	//cero(1);
     	actualizarDisplay(0);
     	mensaje = "Llego al piso 0.";
     	break;
     case 1:
+    	//uno(1);
     	actualizarDisplay(1);
       	mensaje = "Llego al piso 1.";
     	break;
     case 2:
+    	//dos(1);
     	actualizarDisplay(2);
         mensaje = "Llego al piso 2.";
     	break;
     case 3:
+    	//tres(1);
     	actualizarDisplay(3);
     	mensaje = "Llego al piso 3.";
     	break;
     case 4:
+    	//cuatro(1);
     	actualizarDisplay(4);
     	mensaje = "Llego al piso 4.";
     	break;
     case 5:
+    	//cinco(1);
     	actualizarDisplay(5);
     	mensaje = "Llego al piso 5.";
     	break;
     case 6:
+    	//seis(1);
     	actualizarDisplay(6);
     	mensaje = "Llego al piso 6.";
     	break;
     case 7:
+    	//siete(1);
     	actualizarDisplay(7);
     	mensaje = "Llego al piso 7.";
     	break;
     case 8:
+    	//ocho(1);
     	actualizarDisplay(8);
     	mensaje = "Llego al piso 8.";
     	break;
     case 9:
+    	//nueve(1);
     	actualizarDisplay(9);
     	mensaje = "Llego al piso 9.";
     	break; 
@@ -269,14 +237,3 @@ void actualizarDisplay(int piso) {
 
 
 
-## 🤖 Link al proyecto 
----
-
- Proyecto [Montacargas ](https://www.tinkercad.com/things/13dhFNJBz53?sharecode=SiTig1GAiG8UVaN78oe8jJpEupKP30JCmkHKZclBln4 "Enlace del proyecto en Tinkercad") TinkerCad.
- - - - 
-
-##  📘 Fuentes
----
-- [Tecnicatura Universitaria en Programación - UTN](http://www.sistemas-utnfra.com.ar/#/pages/carrera/tecnico-programacion/resumen).
-
-with ❤️ 
