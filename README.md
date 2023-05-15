@@ -266,7 +266,7 @@ void actualizarDisplay(int piso) {
   }
 }
 // FIN FUNCIONES
-
+~~~
 
 
 ## 🤖 Link al proyecto 
