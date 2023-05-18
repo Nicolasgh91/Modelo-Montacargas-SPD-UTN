@@ -12,6 +12,7 @@
 #define G 13
 
 int contador = 0;
+int tiempoDescuento = 0;
 String mensaje = "";
 int estadoBotonSubir = digitalRead(P_SUBE);
 int estadoBotonBajar = digitalRead(P_BAJA);
@@ -43,37 +44,59 @@ void loop()
   estadoBotonPausa = digitalRead(P_PAUSA);
   	  
   
-  	  if (estadoBotonPausa == 0) 
+  	  if (estadoBotonPausa != 0) 
+      {
+        if (estadoBotonSubir == 0)
+        {       
+          moverUnPiso("asc",3000);      
+        }	
+        else if (estadoBotonBajar == 0)
+        {  
+          moverUnPiso("desc",3000);
+        }
+      
+      } else 
       {
         pausarFuncionamiento();
       }
-  	  if (estadoBotonSubir == 0)
-      {
-        moverUnPiso("asc",3000);
-      }	
-      else if (estadoBotonBajar == 0)
-      {  
-        moverUnPiso("desc",3000);
-      }
-  
-} // FIN LOOP
+  	  
+} // FIN LOOP PRINCIPAL
 
 
 
 // INICIO FUNCIONES
 int moverUnPiso(String subirBajar, int tiempoDelay)
 {
-  	digitalWrite(ledRojo,0);
-  	displayOff(); // Limpio display 7 segmentos.
+  digitalWrite(ledRojo,0);
+  displayOff(); // Limpio display 7 segmentos.
   
-  	if (subirBajar == "asc")
+  int bandera = false;
+  tiempoDescuento = 0; 
+  
+  while (tiempoDescuento <= tiempoDelay) 
+  {
+    tiempoDescuento += 100; // Aumento en 100, hasta llegar al tiempo de delay indicado por parámetro.  
+    digitalWrite(ledVerde,1); // Se queda prendido hasta que termine el delay(mientras sube)
+    //Serial.println(tiempoDescuento);
+    delay(50);
+    if (digitalRead(P_PAUSA) == 0)
     {
-      contador += 1; // Subo un piso
-    } 
-    else if (subirBajar == "desc")
-    {
-      contador -= 1; // Bajo un piso
+      Serial.println("Pausa");
+      pausarFuncionamiento();
+      tiempoDescuento = tiempoDelay;
+      bandera = true;
     }
+   
+  } 
+    
+  if (subirBajar == "asc" && bandera == false)
+  {
+    contador += 1; // Subo un piso
+  } 
+  else if (subirBajar == "desc" && bandera == false)
+  {
+    contador -= 1; // Bajo un piso
+  }
   
   if ( contador > 9){ // Valido que si quiere subir más del 9, se quede en el mismo piso.
   	contador--;
@@ -81,76 +104,64 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
   {
   	contador++;
   }
-    
-  digitalWrite(ledVerde,1); // Se queda prendido hasta que termine el delay(mientras sube)
-  
-  Serial.println(contador);
   
   switch(contador) // El contador determina el piso a donde ir
   {
   	case 0:
-    	//cero(1);
     	actualizarDisplay(0);
     	mensaje = "Llego al piso 0.";
     	break;
     case 1:
-    	//uno(1);
     	actualizarDisplay(1);
       	mensaje = "Llego al piso 1.";
     	break;
     case 2:
-    	//dos(1);
     	actualizarDisplay(2);
         mensaje = "Llego al piso 2.";
     	break;
     case 3:
-    	//tres(1);
     	actualizarDisplay(3);
     	mensaje = "Llego al piso 3.";
     	break;
     case 4:
-    	//cuatro(1);
     	actualizarDisplay(4);
     	mensaje = "Llego al piso 4.";
     	break;
     case 5:
-    	//cinco(1);
     	actualizarDisplay(5);
     	mensaje = "Llego al piso 5.";
     	break;
     case 6:
-    	//seis(1);
     	actualizarDisplay(6);
     	mensaje = "Llego al piso 6.";
     	break;
     case 7:
-    	//siete(1);
     	actualizarDisplay(7);
     	mensaje = "Llego al piso 7.";
     	break;
     case 8:
-    	//ocho(1);
     	actualizarDisplay(8);
     	mensaje = "Llego al piso 8.";
     	break;
     case 9:
-    	//nueve(1);
     	actualizarDisplay(9);
     	mensaje = "Llego al piso 9.";
     	break; 
   }
   
-  delay(tiempoDelay);
-  Serial.println(mensaje);
-  digitalWrite(ledVerde,0);
+  if (bandera == false)
+  {
+    Serial.println(mensaje);  
+  }
   
+  digitalWrite(ledVerde,0);
   return contador;
 }
 
 
 void pausarFuncionamiento()
 {
- 	actualizarDisplay(contador + 1);
+ 	actualizarDisplay(contador);
     digitalWrite(ledRojo,1);
     delay(100);
     mensaje = "Se freno el sistema, vuelva a presionar el boton para reanudar";
