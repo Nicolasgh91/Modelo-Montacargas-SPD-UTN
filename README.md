@@ -55,6 +55,7 @@ RESISTENCIAS NECESARIAS PARA CADA COMPONENTE.
 
 //Declaración de variables
 int contador = 0;
+int tiempoDescuento = 0;
 String mensaje = "";
 int estadoBotonSubir = digitalRead(P_SUBE);
 int estadoBotonBajar = digitalRead(P_BAJA);
@@ -87,18 +88,22 @@ void loop()
   estadoBotonPausa = digitalRead(P_PAUSA);
   	  
   
-  	  if (estadoBotonPausa == 0) 
-      {
-        pausarFuncionamiento();
-      }
-  	  if (estadoBotonSubir == 0)
-      {
-        moverUnPiso("asc",3000); // Asciende un piso al presionar el botón, demora 3seg por piso.
-      }	
-      else if (estadoBotonBajar == 0)
-      {  
-        moverUnPiso("desc",3000); // Desciende un piso al presionar el botón, demora 3seg por piso.
-      }
+  if (estadoBotonPausa != 0) 
+  {
+        
+    if (estadoBotonSubir == 0)
+    {       
+      moverUnPiso("asc",3000);      
+    }	
+    else if (estadoBotonBajar == 0)
+    {  
+     moverUnPiso("desc",3000);
+    }
+  } 
+  else 
+  {
+    pausarFuncionamiento();
+  }
   
 } // FIN LOOP
 
@@ -111,12 +116,30 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
 {
   	digitalWrite(ledRojo,0); //Apaga el led rojo en caso haya quedado encendido a causa de haberse frenado el sistema previamente.
   	displayOff(); // Limpio display 7 segmentos.
-  
-  	if (subirBajar == "asc")
+
+    int bandera = false;
+    tiempoDescuento = 0; 
+
+      while (tiempoDescuento <= tiempoDelay) 
+    {
+    tiempoDescuento += 100; // Aumento en 100, hasta llegar al tiempo de delay indicado por parámetro.  
+    digitalWrite(ledVerde,1); // Se queda prendido hasta que termine el delay(mientras sube)
+    //Serial.println(tiempoDescuento);
+    delay(50);
+      if (digitalRead(P_PAUSA) == 0)
+      { 
+        Serial.println("Pausa");
+        pausarFuncionamiento();
+        tiempoDescuento = tiempoDelay;
+        bandera = true;
+      } 
+    } 
+
+  	if (subirBajar == "asc" && bandera == false)
     {
       contador += 1; // Subo un piso
     } 
-    else if (subirBajar == "desc")
+    else if (subirBajar == "desc" && bandera == false)
     {
       contador -= 1; // Bajo un piso
     }
@@ -128,8 +151,6 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
   {
   	contador++;
   }
-    
-  digitalWrite(ledVerde,1); // Se queda prendido hasta que termine el delay(mientras sube)
   
   switch(contador) // El contador determina el piso a donde ir
   {
@@ -175,17 +196,19 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
     	break; 
   }
   
-  delay(tiempoDelay); // Acá asigno el tiempo de espera 
-  Serial.println(mensaje); // E imprimo por consola la ubicación del montacargas, despues de haber actualizado el display.
-  digitalWrite(ledVerde,0); // Apago el led verde.
+  if (bandera == false)
+  {
+    Serial.println(mensaje);  
+  }
   
-  return contador; // Devuelvo el contador.
+  digitalWrite(ledVerde,0);
+  return contador;
 }
 
 // Función que no recibe parámetros, es accionada al presionar el botón de pausa.
 void pausarFuncionamiento()
 {
- 	  actualizarDisplay(contador + 1); //Actualizó el display a la posición donde debe llegar.
+ 	  actualizarDisplay(contador); //Actualizó el display a la posición donde debe llegar.
     digitalWrite(ledRojo,1); // Prendo el led rojo informando elevador pausado.
     delay(100); // Delay aplicado sólo por efecto rebote en el sistema. 
     mensaje = "Se freno el sistema, vuelva a presionar el boton para reanudar";
@@ -207,6 +230,14 @@ void displayOff()
 // Recibe como parámetro un entero, que será el contador de piso, para imprimir en el display el piso correspondiente.
 void actualizarDisplay(int piso) {
   switch (piso) {
+    case 0:
+      digitalWrite(A, 1);
+      digitalWrite(B, 1);
+      digitalWrite(C, 1);
+      digitalWrite(D, 1);
+      digitalWrite(E, 1);
+      digitalWrite(F, 1);
+      break;
     case 1:
       digitalWrite(B, 1);
       digitalWrite(C, 1);

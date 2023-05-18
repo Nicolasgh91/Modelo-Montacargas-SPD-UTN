@@ -43,9 +43,10 @@ void loop()
   estadoBotonBajar = digitalRead(P_BAJA);
   estadoBotonPausa = digitalRead(P_PAUSA);
   	  
-  
+  	
   	  if (estadoBotonPausa != 0) 
       {
+        
         if (estadoBotonSubir == 0)
         {       
           moverUnPiso("asc",3000);      
@@ -80,13 +81,12 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
     //Serial.println(tiempoDescuento);
     delay(50);
     if (digitalRead(P_PAUSA) == 0)
-    {
+    { 
       Serial.println("Pausa");
       pausarFuncionamiento();
       tiempoDescuento = tiempoDelay;
       bandera = true;
-    }
-   
+    } 
   } 
     
   if (subirBajar == "asc" && bandera == false)
@@ -182,6 +182,14 @@ void displayOff() // Limpia display 7 segmentos.
 
 void actualizarDisplay(int piso) {
   switch (piso) {
+    case 0:
+      digitalWrite(A, 1);
+      digitalWrite(B, 1);
+      digitalWrite(C, 1);
+      digitalWrite(D, 1);
+      digitalWrite(E, 1);
+      digitalWrite(F, 1);
+      break;
     case 1:
       digitalWrite(B, 1);
       digitalWrite(C, 1);
@@ -245,6 +253,3 @@ void actualizarDisplay(int piso) {
   }
 }
 // FIN FUNCIONES
-
-
-
