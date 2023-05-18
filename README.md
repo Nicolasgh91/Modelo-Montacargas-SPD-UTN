@@ -33,6 +33,10 @@ Para realizar el proyecto deberán usar mínimamente:
 3 BOTONES  
 RESISTENCIAS NECESARIAS PARA CADA COMPONENTE.
 
+## Esquema 🔩
+
+![Imagen no encontrada](./img/EsquemaTinkercad.png "Tinkercad")
+
 ## Código del programa: 🔩
 
 * * *
