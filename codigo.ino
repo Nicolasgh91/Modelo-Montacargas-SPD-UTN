@@ -44,22 +44,18 @@ void loop()
   estadoBotonPausa = digitalRead(P_PAUSA);
   	  
   	
-  	  if (estadoBotonPausa != 0) 
-      {
-        
-        if (estadoBotonSubir == 0)
-        {       
-          moverUnPiso("asc",3000);      
-        }	
-        else if (estadoBotonBajar == 0)
-        {  
-          moverUnPiso("desc",3000);
-        }
-      
-      } else 
+  	  if (estadoBotonPausa == 0) 
       {
         pausarFuncionamiento();
-      }
+      } 
+      else if (estadoBotonSubir == 0)
+      {       
+        moverUnPiso("asc",3000);      
+      }	
+      else if (estadoBotonBajar == 0)
+      {  
+        moverUnPiso("desc",3000);
+      } 
   	  
 } // FIN LOOP PRINCIPAL
 

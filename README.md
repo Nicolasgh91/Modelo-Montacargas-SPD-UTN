@@ -88,22 +88,18 @@ void loop()
   estadoBotonPausa = digitalRead(P_PAUSA);
   	  
   
-  if (estadoBotonPausa != 0) 
-  {
-        
-    if (estadoBotonSubir == 0)
-    {       
-      moverUnPiso("asc",3000);      
-    }	
-    else if (estadoBotonBajar == 0)
-    {  
-     moverUnPiso("desc",3000);
-    }
-  } 
-  else 
-  {
-    pausarFuncionamiento();
-  }
+    	if (estadoBotonPausa == 0) 
+      {
+        pausarFuncionamiento();
+      } 
+      else if (estadoBotonSubir == 0)
+      {       
+        moverUnPiso("asc",3000);  // Al presionar el botón subir, sube un piso.   
+      }	
+      else if (estadoBotonBajar == 0)
+      {  
+        moverUnPiso("desc",3000); // Al presionar el botón bajar, sube un piso.
+      } 
   
 } // FIN LOOP
 
@@ -117,25 +113,26 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
   	digitalWrite(ledRojo,0); //Apaga el led rojo en caso haya quedado encendido a causa de haberse frenado el sistema previamente.
   	displayOff(); // Limpio display 7 segmentos.
 
-    int bandera = false;
+    int bandera = false; // Esta bandera sirve para ver cuando se acciona el botón de pausa.
     tiempoDescuento = 0; 
 
-      while (tiempoDescuento <= tiempoDelay) 
+      while (tiempoDescuento <= tiempoDelay) // voy descontando de a 100ms al tiempo de delay pasado por parámetro, entonces constantemente leo dentro de este bucle, para verificar si el botón de pausa es accionado.
     {
-    tiempoDescuento += 100; // Aumento en 100, hasta llegar al tiempo de delay indicado por parámetro.  
-    digitalWrite(ledVerde,1); // Se queda prendido hasta que termine el delay(mientras sube)
-    //Serial.println(tiempoDescuento);
-    delay(50);
-      if (digitalRead(P_PAUSA) == 0)
+      tiempoDescuento += 100; // Aumento en 100, hasta llegar al tiempo de delay indicado por parámetro.  
+      digitalWrite(ledVerde,1); // Se queda prendido hasta que termine el delay(mientras sube)
+      //Serial.println(tiempoDescuento);
+      delay(50); // Este delay es sólo por el efecto rebote de arduino/tinkercad
+        
+      if (digitalRead(P_PAUSA) == 0) // Si se acciona el botón de pausa, entra acá.
       { 
         Serial.println("Pausa");
-        pausarFuncionamiento();
-        tiempoDescuento = tiempoDelay;
-        bandera = true;
+        pausarFuncionamiento(); // Pauso funcionamiento
+        tiempoDescuento = tiempoDelay; // E igualo el tiempo de espera que viene por parámetro, entonces, una vez que se pausó el sistema, sale del bucle y volverá a entrar al bucle cuando accione algún botón.
+        bandera = true; // Al cambiar la bandera, evito aumentar el piso/contador. Entonces SI la bandera cambió a true, quiere decir que el botón de pausa fue accionado, por ende al frenar el montacargas no avanza al piso a dónde debia ir. 
       } 
     } 
 
-  	if (subirBajar == "asc" && bandera == false)
+  	if (subirBajar == "asc" && bandera == false) // Si la bandera no fue accionada, puedo finalizar el proceso y subir o bajar exitosamente de piso.
     {
       contador += 1; // Subo un piso
     } 
@@ -196,12 +193,12 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
     	break; 
   }
   
-  if (bandera == false)
+  if (bandera == false) // Si la bandera no se accionó, imprimo por consola el piso a dónde llegó el elevador.
   {
     Serial.println(mensaje);  
   }
   
-  digitalWrite(ledVerde,0);
+  digitalWrite(ledVerde,0); // Al finalizar el proceso apago el led verde, que indicaba "en movimiento".
   return contador;
 }
 
