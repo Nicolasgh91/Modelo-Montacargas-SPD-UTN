@@ -10,10 +10,10 @@ Desafio donde se busca simular el recorrido de un montacargas.
 ***
 ![Imagen no encontrada](./img/Conexiones-placa.png "Parcial Nº1 SPD - UTN")
 
-## Comenzando 🚀
+## Documentación 🚀
 ***
 
-En este proyecto simula el ascenso, descenso y pausa de un montacargas/elevador:
+Este proyecto simula el ascenso, descenso y pausa de un montacargas/elevador:
 - Al presionar el pulsador de subir, da comienzo a la simulación y sube de a un piso a la vez.
 - Al presionar el pulsador de bajar, baja un piso a la vez.
 - Al presionar el pulsador de pausar, frena el sistema y el montacargas se queda en la posición a la espera de una nueva indicación.
@@ -25,8 +25,6 @@ En este proyecto simula el ascenso, descenso y pausa de un montacargas/elevador:
 [Link del proyecto en Tinkercad ](https://www.tinkercad.com/things/13dhFNJBz53?sharecode=SiTig1GAiG8UVaN78oe8jJpEupKP30JCmkHKZclBln4 "Enlace del proyecto en Tinkercad")
 
 ## Consigna 🔩
-
-Consigna Montacargas:
 
 Para realizar el proyecto deberán usar mínimamente:  
 1 ARDUINO UNO.  
@@ -40,6 +38,8 @@ RESISTENCIAS NECESARIAS PARA CADA COMPONENTE.
 * * *
 
  ~~~ C (Lenguaje del código)
+
+ //Asignación de pines/conexiones
 #define ledVerde 6
 #define ledRojo 5
 #define P_SUBE 19
@@ -53,12 +53,14 @@ RESISTENCIAS NECESARIAS PARA CADA COMPONENTE.
 #define F 12
 #define G 13
 
+//Declaración de variables
 int contador = 0;
 String mensaje = "";
 int estadoBotonSubir = digitalRead(P_SUBE);
 int estadoBotonBajar = digitalRead(P_BAJA);
 int estadoBotonPausa = digitalRead(P_PAUSA);
 
+//Función principal donde se configuran las conexiones
 void setup()
 {
   Serial.begin(9600);
@@ -91,11 +93,11 @@ void loop()
       }
   	  if (estadoBotonSubir == 0)
       {
-        moverUnPiso("asc",3000);
+        moverUnPiso("asc",3000); // Asciende un piso al presionar el botón, demora 3seg por piso.
       }	
       else if (estadoBotonBajar == 0)
       {  
-        moverUnPiso("desc",3000);
+        moverUnPiso("desc",3000); // Desciende un piso al presionar el botón, demora 3seg por piso.
       }
   
 } // FIN LOOP
@@ -103,9 +105,11 @@ void loop()
 
 
 // INICIO FUNCIONES
+
+// Función que recibe dos parámetros, uno que indica si desea ascender/descender y el otro parámetro indica el tiempo de espera por piso. Retorna un contador que es la posición donde quedó el montacargas.
 int moverUnPiso(String subirBajar, int tiempoDelay)
 {
-  	digitalWrite(ledRojo,0);
+  	digitalWrite(ledRojo,0); //Apaga el led rojo en caso haya quedado encendido a causa de haberse frenado el sistema previamente.
   	displayOff(); // Limpio display 7 segmentos.
   
   	if (subirBajar == "asc")
@@ -117,7 +121,8 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
       contador -= 1; // Bajo un piso
     }
   
-  if ( contador > 9){ // Valido que si quiere subir más del 9, se quede en el mismo piso.
+  if ( contador > 9)
+  { // Valido que si quiere subir más del 9, se quede en el mismo piso.
   	contador--;
   } else if (contador < 0) // Valido que si quiere bajar más del 0, se quede en el mismo piso.
   {
@@ -126,13 +131,11 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
     
   digitalWrite(ledVerde,1); // Se queda prendido hasta que termine el delay(mientras sube)
   
-  Serial.println(contador);
-  
   switch(contador) // El contador determina el piso a donde ir
   {
   	case 0:
-    	actualizarDisplay(0);
-    	mensaje = "Llego al piso 0.";
+    	actualizarDisplay(0);//Esta función prende el display de 7 segmentos con el número que le paso por parámetro.
+    	mensaje = "Llego al piso 0."; //Imprimo por consola la ubicación del montacargas.
     	break;
     case 1:
     	actualizarDisplay(1);
@@ -172,25 +175,25 @@ int moverUnPiso(String subirBajar, int tiempoDelay)
     	break; 
   }
   
-  delay(tiempoDelay);
-  Serial.println(mensaje);
-  digitalWrite(ledVerde,0);
+  delay(tiempoDelay); // Acá asigno el tiempo de espera 
+  Serial.println(mensaje); // E imprimo por consola la ubicación del montacargas, despues de haber actualizado el display.
+  digitalWrite(ledVerde,0); // Apago el led verde.
   
-  return contador;
+  return contador; // Devuelvo el contador.
 }
 
-
+// Función que no recibe parámetros, es accionada al presionar el botón de pausa.
 void pausarFuncionamiento()
 {
- 	actualizarDisplay(contador + 1);
-    digitalWrite(ledRojo,1);
-    delay(100);
+ 	  actualizarDisplay(contador + 1); //Actualizó el display a la posición donde debe llegar.
+    digitalWrite(ledRojo,1); // Prendo el led rojo informando elevador pausado.
+    delay(100); // Delay aplicado sólo por efecto rebote en el sistema. 
     mensaje = "Se freno el sistema, vuelva a presionar el boton para reanudar";
-    Serial.println(mensaje);
+    Serial.println(mensaje); // Imprimo mensaje por consola para comprobar estado.
 }
 
-
-void displayOff() // Limpia display 7 segmentos.
+// Limpia display 7 segmentos.
+void displayOff() 
 {
   digitalWrite(A, LOW);
   digitalWrite(B, LOW);
@@ -201,6 +204,7 @@ void displayOff() // Limpia display 7 segmentos.
   digitalWrite(G, LOW);
 }
 
+// Recibe como parámetro un entero, que será el contador de piso, para imprimir en el display el piso correspondiente.
 void actualizarDisplay(int piso) {
   switch (piso) {
     case 1:
